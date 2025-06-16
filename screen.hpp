@@ -17,6 +17,7 @@ struct sprite {
 struct entity {
     sprite s;
     int W{}, H{};
+    bool collision;
 };
 
 struct screen {
@@ -27,8 +28,10 @@ struct screen {
     ~screen();
 
     void clear();
-    void drawframe() const;
-    void debugmsg(const char *);
+    void add(const entity&);
+    void draw() const;
+
+    void debug(const char *);
 };
 
 struct input {

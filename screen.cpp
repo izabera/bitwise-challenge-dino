@@ -38,11 +38,11 @@ void screen::clear() {
     objects = {};
 }
 
-void screen::drawframe() const {
+void screen::draw() const {
     std::string tty;
 }
 
-void screen::debugmsg(const char *msg) {
+void screen::debug(const char *msg) {
     std::string s = msg;
     s += "\x1b[K\r";
     writeraw(s.data());

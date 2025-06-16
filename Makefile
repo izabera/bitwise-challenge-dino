@@ -5,7 +5,7 @@ LINK.o := $(CXX) $(LDFLAGS)
 
 test: test.o screen.o
 
-dino:
+dino: dino.o screen.o
 
 -include *.d
 

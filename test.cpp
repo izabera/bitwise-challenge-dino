@@ -2,7 +2,7 @@
 #include "screen.hpp"
 #include "test.hpp"
 
-TEST("load sprite") {
+TEST("sprite/load") {
     sprite dino("./dinorun1.pbm");
 
     if (dino.W != 20 || dino.H != 22)
@@ -22,7 +22,7 @@ TEST("interactive/screen and keyboard detection") {
     while (i.tick < limit) {
         i.get();
         std::string msg = "press a wasd key within the next " + std::to_string(limit-i.tick) + " frames";
-        s.debugmsg(msg.data());
+        s.debug(msg.data());
         if (i.w || i.a || i.s || i.d)
             return OK;
         if (i.quit)
