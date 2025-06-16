@@ -1,10 +1,12 @@
 #include <string>
 #include "lib.hpp"
+#include "scene.hpp"
 #include "screen.hpp"
+#include "sprite.hpp"
 #include "test.hpp"
 
-TEST("sprite/load") {
-    sprite dino("./dinorun1.pbm");
+TEST("sprite/load single") {
+    sprite dino("assets/dinorun1.pbm");
 
     if (dino.W != 20 || dino.H != 22)
         return FAIL;
@@ -14,6 +16,17 @@ TEST("sprite/load") {
         sum += c;
 
     return sum == 186;
+};
+
+TEST("sprite/load all") {
+    loadsprites();
+    if (sprites.size() != 2)
+        return FAIL;
+
+    if (sprites["dinorun1"]->W != 20)
+        return FAIL;
+
+    return OK;
 };
 
 TEST("interactive/screen and keyboard detection") {

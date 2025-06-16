@@ -55,6 +55,8 @@ int main() {
     state state{};
     state.seed = time(0);
 
+    loadsprites();
+
     screen screen;
     input in;
     scene::H = screen.H;

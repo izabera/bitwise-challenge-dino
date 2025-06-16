@@ -5,6 +5,7 @@
 struct scene {
     static inline int W, H;
 
+    // horizontal position
     std::vector<int> birds;
     std::vector<int> cactuses;
 
@@ -17,3 +18,5 @@ struct scene {
     void render(screen& s);
 };
 
+// loads everything from the asset directory
+void loadsprites();

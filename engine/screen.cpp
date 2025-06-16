@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <string>
 #include <sys/ioctl.h>
 #include <sys/select.h>
@@ -19,8 +18,8 @@ screen::screen() {
         exit(1);
     }
 
-    W = win.ws_col;
-    H = win.ws_row * 2;
+    W = win.ws_col - 1;
+    H = win.ws_row * 2 - 1; // skip the final column and line for now
 
     writeraw("\x1b[?1049h"); // alt screen on
     writeraw("\x1b[?25l");   // cursor off
@@ -35,7 +34,7 @@ screen::~screen() {
 }
 
 void screen::clear() {
-    objects = {};
+    std::fill(fb.begin(), fb.end(), 0);
 }
 
 void screen::draw() const {
@@ -46,27 +45,6 @@ void screen::debug(const char *msg) {
     std::string s = msg;
     s += "\x1b[K\r";
     writeraw(s.data());
-}
-
-sprite::sprite() {}
-
-sprite::sprite(const char *filename) {
-    std::ifstream file(filename);
-    if (file.bad())
-        return;
-
-    char header[3];
-    file >> header;
-    if (header[0] != 'P' || header[1] != '1')
-        return;
-
-    file >> W >> H;
-    data.resize(W*H);
-    char c;
-    for (int i = 0; i < W * H; i++) {
-        file >> c;
-        data[i] = c == '1';
-    }
 }
 
 void input::get() {

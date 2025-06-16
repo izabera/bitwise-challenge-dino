@@ -1,15 +1,18 @@
 CXX = clang++
 CXXFLAGS = -ggdb3 -Wall -Wextra
-CPPFLAGS += -MP -MMD
+CPPFLAGS += -MP -MMD -Iinclude -Iengine/include
 LINK.o := $(CXX) $(LDFLAGS)
 
-test: test.o screen.o
+engine = engine/scene.o engine/screen.o
 
-dino: dino.o screen.o
+test: test.o $(engine)
+
+dino: dino.o $(engine)
 
 -include *.d
 
 .PHONY: clean
 
 clean:
-	rm -f *.[do] test dino
+	find -name '*.[do]' -exec rm {} +
+	rm -f test dino
