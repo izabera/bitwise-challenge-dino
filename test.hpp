@@ -1,6 +1,4 @@
-#ifndef TEST_HPP
-#define TEST_HPP
-
+#pragma once
 #include <fnmatch.h>
 #include <stdio.h>
 #include <vector>
@@ -74,5 +72,3 @@ static inline bool run_tests(int argc, char **argv) {
     printf("skipped=%d\n", int(tests.size() - ran));
     return fail == 0;
 }
-
-#endif

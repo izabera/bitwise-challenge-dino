@@ -1,4 +1,5 @@
 CXX = clang++
+CXXFLAGS = -ggdb3 -Wall -Wextra
 CPPFLAGS += -MP -MMD
 LINK.o := $(CXX) $(LDFLAGS)
 

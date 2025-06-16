@@ -1,3 +1,4 @@
+#include <string>
 #include "screen.hpp"
 #include "test.hpp"
 
@@ -12,6 +13,22 @@ TEST("load sprite") {
         sum += c;
 
     return sum == 186;
+};
+
+TEST("interactive/screen and keyboard detection") {
+    screen s;
+    input i;
+    u32 limit = 1000;
+    while (i.tick < limit) {
+        i.get();
+        std::string msg = "press a wasd key within the next " + std::to_string(limit-i.tick) + " frames";
+        s.debugmsg(msg.data());
+        if (i.w || i.a || i.s || i.d)
+            return OK;
+        if (i.quit)
+            break;
+    }
+    return FAIL;
 };
 
 int main(int argc, char **argv) {

@@ -1,10 +1,11 @@
-#include "screen.hpp"
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
-#include <iostream>
 #include <string>
+#include <sys/ioctl.h>
+#include <sys/select.h>
 #include <unistd.h>
+#include "screen.hpp"
 
 static void writeraw(const char *msg) {
     write(1, msg, strlen(msg));
@@ -23,8 +24,7 @@ screen::screen() {
     writeraw("\x1b[?1049h"); // alt screen on
     writeraw("\x1b[?25l");   // cursor off
 
-    termios raw{};
-    tcgetattr(1, &raw);
+    system("stty raw -echo");
 }
 
 screen::~screen() {
@@ -39,6 +39,11 @@ void screen::clear() {
 
 void screen::drawframe() {
     std::string tty;
+}
+void screen::debugmsg(const char *msg) {
+    std::string s = msg;
+    s += "\x1b[K\r";
+    writeraw(s.data());
 }
 
 sprite::sprite() { W = H = 0; }
@@ -60,4 +65,33 @@ sprite::sprite(const char *filename) {
         file >> c;
         data[i] = c == '1';
     }
+}
+
+void input::get() {
+    w = a = s = d = quit = 0;
+    fd_set rfds{};
+    FD_SET(0, &rfds);
+    struct timeval tv { 0, 1'000'000/FPS };
+
+    while (1) {
+        if (select(1, &rfds, NULL, NULL, &tv) <= 0)
+            break;
+
+        char buf[100];
+        ssize_t r = read(0, buf, sizeof buf);
+        if (r <= 0)
+            break;
+
+        for (ssize_t b = 0; b < r; b++) {
+            switch (buf[b]) {
+                case ' ':
+                case 'w': case 'W': w = true; break;
+                case 'a': case 'A': a = true; break;
+                case 's': case 'S': s = true; break;
+                case 'd': case 'D': d = true; break;
+                case '\3': quit = true; break; // ^C
+            }
+        }
+    }
+    tick++;
 }
