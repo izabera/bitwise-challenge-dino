@@ -11,9 +11,10 @@ static void writeraw(const char *msg) {
     write(1, msg, strlen(msg));
 }
 
+
 screen::screen() {
     struct winsize win;
-    if (ioctl(0, TIOCGWINSZ, &win) == -1) {
+    if (ioctl(1, TIOCGWINSZ, &win) == -1) {
         writeraw("not a tty\n");
         exit(1);
     }
@@ -37,16 +38,17 @@ void screen::clear() {
     objects = {};
 }
 
-void screen::drawframe() {
+void screen::drawframe() const {
     std::string tty;
 }
+
 void screen::debugmsg(const char *msg) {
     std::string s = msg;
     s += "\x1b[K\r";
     writeraw(s.data());
 }
 
-sprite::sprite() { W = H = 0; }
+sprite::sprite() {}
 
 sprite::sprite(const char *filename) {
     std::ifstream file(filename);
@@ -69,6 +71,7 @@ sprite::sprite(const char *filename) {
 
 void input::get() {
     w = a = s = d = quit = 0;
+
     fd_set rfds{};
     FD_SET(0, &rfds);
     struct timeval tv { 0, 1'000'000/FPS };

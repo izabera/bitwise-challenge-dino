@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vector>
 #include "types.hpp"
 
@@ -28,7 +27,7 @@ struct screen {
     ~screen();
 
     void clear();
-    void drawframe();
+    void drawframe() const;
     void debugmsg(const char *);
 };
 
