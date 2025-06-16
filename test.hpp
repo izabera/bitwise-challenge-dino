@@ -5,7 +5,6 @@
 
 using result = bool;
 static constexpr result FAIL = false;
-static constexpr result PASS = true;
 static constexpr result OK = true;
 
 struct test {
