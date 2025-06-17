@@ -198,8 +198,9 @@ TEST("interactive/jump") {
 
         if (s.dino.height == 0)
             state.jumpframe = 0;
-        auto h = screen.H - (s.dino.height * screen.H/2 / 2500 + screen.H/2);
-        drawsprite(screen, dino, 0, h);
+
+        auto h = screen.H*3/4 - (s.dino.height * screen.H/2 / 2500) - dino.H;
+        drawsprite(screen, dino, screen.W/10-dino.W, h);
         screen.draw();
 
         std::string msg = "height=" + std::to_string(s.dino.height);

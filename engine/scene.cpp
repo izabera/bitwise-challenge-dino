@@ -65,10 +65,14 @@ bool drawsprite(screen& screen, const sprite& sprite, int W, int H) {
 
 void scene::render(screen& scr) {
     auto* cactus = sprites["smallcactus1"].get();
+    auto* player = sprites[dino.anim_frame == 0 ? "dinorun1" : "dinorun2"].get();
     if (!cactus)
         return;
 
     for (auto c : cactuses) {
-        drawsprite(scr, *cactus, c, scr.H/2);
+        drawsprite(scr, *cactus, c, scr.H*3/4 - cactus->H);
     }
+
+    auto h = scr.H*3/4 - (dino.height * scr.H/2 / 2500) - player->H;
+    drawsprite(scr, *player, scr.W/10-player->W, h);
 }

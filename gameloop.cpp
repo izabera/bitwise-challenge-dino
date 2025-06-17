@@ -10,7 +10,7 @@ int main() {
     loadsprites();
 
     ttyscreen screen;
-    input in{};
+    input in;
     in.W = screen.W;
     in.H = screen.H;
 
