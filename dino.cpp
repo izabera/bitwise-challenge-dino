@@ -18,6 +18,7 @@ std::pair<state, scene> makescene(const input& i, state state) {
     if (s.dino.height == 0)
         state.jumpframe = 0;
 
+    s.dino.anim_frame = i.tick % 10 > 5;
     // auto hspeed = s.W / (FPS * 2); // birds/cactuses traverse the screen in 2s
 
     rng rng{state.seed};

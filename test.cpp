@@ -184,7 +184,8 @@ TEST("interactive/jump") {
     input i;
 
     loadsprites();
-    const auto& dino = *sprites["dinorun1"];
+    const auto& dino1 = *sprites["dinorun1"];
+    const auto& dino2 = *sprites["dinorun2"];
 
     state state;
     while (1) {
@@ -199,8 +200,8 @@ TEST("interactive/jump") {
         if (s.dino.height == 0)
             state.jumpframe = 0;
 
-        auto h = screen.H*3/4 - (s.dino.height * screen.H/2 / 2500) - dino.H;
-        drawsprite(screen, dino, screen.W/10-dino.W, h);
+        auto h = screen.H*3/4 - (s.dino.height * screen.H/2 / 2500) - dino1.H;
+        drawsprite(screen, (i.tick % 10 > 5) ? dino1 : dino2, screen.W/10-dino1.W, h);
         screen.draw();
 
         std::string msg = "height=" + std::to_string(s.dino.height);
