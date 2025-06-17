@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include "scene.hpp"
+#include "screen.hpp"
 #include "sprite.hpp"
 
 using namespace std::string_literals;
@@ -43,9 +44,31 @@ void loadsprites() {
     }
 }
 
+bool drawsprite(screen& scr, const sprite* spr, int W, int H) {
+    bool collision = false;
+    for (auto h = 0; h < spr->H; h++) {
+        if (H + h < 0 || H + h > scr.H)
+            continue;
+        for (auto w = 0; w < spr->W; w++) {
+            if (W + w < 0 || W + w > scr.H)
+                continue;
+            if (!spr->data[h * spr->W + w])
+                continue;
+            auto pos = (H + h) * scr.W + W + w;
+            if (scr.fb[pos])
+                collision = true;
+            scr.fb[pos] = true;
+        }
+    }
+    return collision;
+}
 
-//#include "screen.hpp"
-//void scene::render(screen& s) {
-//    for (auto b : birds) {
-//    }
-//}
+void scene::render(screen& scr) {
+    auto* cactus = sprites["smallcactus1"].get();
+    if (!cactus)
+        return;
+
+    for (auto c : cactuses) {
+        drawsprite(scr, cactus, c, scr.H/2);
+    }
+}

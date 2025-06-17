@@ -1,6 +1,6 @@
 CXX = clang++
 CXXFLAGS = -ggdb3 -Wall -Wextra
-CPPFLAGS += -MP -MMD -Iinclude -Iengine/include
+CPPFLAGS += -MP -MMD -Iengine/include
 LINK.o := $(CXX) $(LDFLAGS)
 
 engine = engine/scene.o engine/screen.o

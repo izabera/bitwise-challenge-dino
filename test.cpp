@@ -20,7 +20,7 @@ TEST("sprite/load single") {
 
 TEST("sprite/load all") {
     loadsprites();
-    if (sprites.size() != 2)
+    if (sprites.size() != 3)
         return FAIL;
 
     if (sprites["dinorun1"]->W != 20)
@@ -32,13 +32,37 @@ TEST("sprite/load all") {
 TEST("interactive/screen and keyboard detection") {
     screen s;
     input i;
-    u32 limit = 1000;
+    u32 limit = FPS * 5;;
     while (i.tick < limit) {
         i.get();
         std::string msg = "press a wasd key within the next " \
                            + std::to_string(limit-i.tick) \
                            + " frames";
         s.debug(msg.data());
+        if (i.w || i.a || i.s || i.d)
+            return OK;
+        if (i.quit)
+            break;
+    }
+    return FAIL;
+};
+
+TEST("interactive/display image") {
+    screen screen;
+    input i;
+    u32 limit = FPS * 5;;
+
+    loadsprites();
+    scene scene;
+    scene.cactuses.push_back(4);
+    scene.render(screen);
+    screen.draw();
+    while (i.tick < limit) {
+        i.get();
+        std::string msg = "press a wasd key within the next " \
+                           + std::to_string(limit-i.tick) \
+                           + " frames";
+        screen.debug(msg.data());
         if (i.w || i.a || i.s || i.d)
             return OK;
         if (i.quit)

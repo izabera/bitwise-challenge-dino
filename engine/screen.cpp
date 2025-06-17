@@ -6,8 +6,9 @@
 #include <unistd.h>
 #include "screen.hpp"
 
-static void writeraw(const char *msg) {
-    write(1, msg, strlen(msg));
+using namespace std::string_literals;
+static void writeraw(const std::string& msg) {
+    write(1, msg.data(), msg.size());
 }
 
 
@@ -19,12 +20,13 @@ screen::screen() {
     }
 
     W = win.ws_col - 1;
-    H = win.ws_row * 2 - 1; // skip the final column and line for now
+    H = (win.ws_row - 1) * 2; // skip the final column and line for now
 
     writeraw("\x1b[?1049h"); // alt screen on
     writeraw("\x1b[?25l");   // cursor off
 
     system("stty raw -echo");
+    fb.resize(W * H);
 }
 
 screen::~screen() {
@@ -38,13 +40,25 @@ void screen::clear() {
 }
 
 void screen::draw() const {
-    std::string tty;
+    const char *blocks[] = { " ", "▄", "▀", "█" };
+    //const char *blocks[] = { "0", "1", "2", "3" };
+    std::string tty = "\x1b[H";
+    for (auto h = 0; h < H; h+=2) {
+        for (auto w = 0; w < W; w++) {
+            int bits = 0;
+            bits |= (fb[h*W+w] == true) << 1;
+            bits |= fb[(h+1)*W+w] == true;
+            //auto bits = (fb[h*W+w] << 1) | fb[(h+1)*W+w];
+            tty += blocks[bits];
+        }
+        tty += "\r\n";
+    }
+    writeraw(tty);
 }
 
 void screen::debug(const char *msg) {
-    std::string s = msg;
-    s += "\x1b[K\r";
-    writeraw(s.data());
+    auto s = "\x1b[H"s + msg + "\x1b[K";
+    writeraw(s);
 }
 
 void input::get() {
