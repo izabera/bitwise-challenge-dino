@@ -23,7 +23,7 @@ TEST("sprite/load single") {
 
 TEST("sprite/load all") {
     loadsprites();
-    if (sprites.size() != 4)
+    if (sprites.size() != 5)
         return FAIL;
 
     if (sprites["dinorun1"]->W != 20)
@@ -186,6 +186,7 @@ TEST("interactive/jump") {
     loadsprites();
     const auto& dino1 = *sprites["dinorun1"];
     const auto& dino2 = *sprites["dinorun2"];
+    const auto& dinojump = *sprites["dinojump"];
 
     state state;
     while (1) {
@@ -201,7 +202,7 @@ TEST("interactive/jump") {
             state.jumpframe = 0;
 
         auto h = screen.H*3/4 - (s.dino.height * screen.H/2 / 2500) - dino1.H;
-        drawsprite(screen, (i.tick % 10 > 5) ? dino1 : dino2, screen.W/10-dino1.W, h);
+        drawsprite(screen, s.dino.height > 0 ? dinojump : (i.tick % 10 > 5) ? dino1 : dino2, screen.W/10-dino1.W, h);
         screen.draw();
 
         std::string msg = "height=" + std::to_string(s.dino.height);
