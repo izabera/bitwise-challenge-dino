@@ -41,14 +41,10 @@ void screen::clear() {
 
 void screen::draw() const {
     const char *blocks[] = { " ", "▄", "▀", "█" };
-    //const char *blocks[] = { "0", "1", "2", "3" };
     std::string tty = "\x1b[H";
     for (auto h = 0; h < H; h+=2) {
         for (auto w = 0; w < W; w++) {
-            int bits = 0;
-            bits |= (fb[h*W+w] == true) << 1;
-            bits |= fb[(h+1)*W+w] == true;
-            //auto bits = (fb[h*W+w] << 1) | fb[(h+1)*W+w];
+            auto bits = (fb[h*W+w] << 1) | fb[(h+1)*W+w];
             tty += blocks[bits];
         }
         tty += "\r\n";

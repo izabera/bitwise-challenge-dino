@@ -14,3 +14,5 @@ struct sprite {
 
 extern std::unordered_map<std::string, std::unique_ptr<sprite>> sprites;
 
+struct screen;
+bool drawsprite(screen& scr, const sprite& spr, int W, int H);

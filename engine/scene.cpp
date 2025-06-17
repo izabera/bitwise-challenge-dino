@@ -44,20 +44,20 @@ void loadsprites() {
     }
 }
 
-bool drawsprite(screen& scr, const sprite* spr, int W, int H) {
+bool drawsprite(screen& screen, const sprite& sprite, int W, int H) {
     bool collision = false;
-    for (auto h = 0; h < spr->H; h++) {
-        if (H + h < 0 || H + h > scr.H)
+    for (auto h = 0; h < sprite.H; h++) {
+        if (H + h < 0 || H + h >= screen.H)
             continue;
-        for (auto w = 0; w < spr->W; w++) {
-            if (W + w < 0 || W + w > scr.H)
+        for (auto w = 0; w < sprite.W; w++) {
+            if (W + w < 0 || W + w >= screen.W)
                 continue;
-            if (!spr->data[h * spr->W + w])
+            if (!sprite.data[h * sprite.W + w])
                 continue;
-            auto pos = (H + h) * scr.W + W + w;
-            if (scr.fb[pos])
+            auto pos = (H + h) * screen.W + W + w;
+            if (screen.fb[pos])
                 collision = true;
-            scr.fb[pos] = true;
+            screen.fb[pos] = true;
         }
     }
     return collision;
@@ -69,6 +69,6 @@ void scene::render(screen& scr) {
         return;
 
     for (auto c : cactuses) {
-        drawsprite(scr, cactus, c, scr.H/2);
+        drawsprite(scr, *cactus, c, scr.H/2);
     }
 }
