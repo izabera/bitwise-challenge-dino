@@ -21,42 +21,19 @@ std::pair<state, scene> makescene(const input& i, state state) {
     // auto hspeed = s.W / (FPS * 2); // birds/cactuses traverse the screen in 2s
 
     rng rng{state.seed};
-    rng.advance(i.tick+12345); // ignore the first few values
+    rng.advance(i.tick+12345); // ignore the first few values (not really necessary)
 
     for (auto w = -100; w < i.W; w++) {
         auto r = rng.gen();
-        if (i.tick + w < FPS * 3)
-            continue; // first 3 seconds are peaceful
+        if (i.tick + w < FPS * 3) // first 3 seconds are peaceful
+            continue;
 
-        if (r % 100 == 0)
+        if ((i.tick + w) % 40) // not too close
+            continue;
+        if (r % 5 == 0)
             s.birds.push_back(w);
-        if (r % 100 == 1)
+        if (r % 5 == 1)
             s.cactuses.push_back(w);
     }
     return {state, s};
 }
-
-//int main() {
-//    state state{};
-//    state.seed = time(0);
-//
-//    loadsprites();
-//
-//    ttyscreen screen;
-//    input in;
-//    scene::H = screen.H;
-//    scene::W = screen.W;
-//
-//    while (1) {
-//        in.get();
-//        if (in.quit)
-//            break;
-//
-//        auto [st, scene] = makescene(in, state);
-//        state = st;
-//
-//        screen.clear();
-//        scene.render(screen);
-//        screen.draw();
-//    }
-//}
