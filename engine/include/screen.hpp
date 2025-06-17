@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <vector>
 #include "types.hpp"
 
@@ -10,12 +11,15 @@ struct screen {
     int W{}, H{};
     std::vector<bool> fb;
 
-    screen();
-    ~screen();
-
     void clear();
-    void draw() const;
+    std::string draw() const;
+};
 
+struct ttyscreen : screen {
+    ttyscreen();
+    ~ttyscreen();
+
+    void draw() const;
     void debug(const char *msg);
 };
 

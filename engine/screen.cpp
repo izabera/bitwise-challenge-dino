@@ -12,7 +12,7 @@ static void writeraw(const std::string& msg) {
 }
 
 
-screen::screen() {
+ttyscreen::ttyscreen() {
     struct winsize win;
     if (ioctl(1, TIOCGWINSZ, &win) == -1) {
         writeraw("not a tty\n");
@@ -29,7 +29,7 @@ screen::screen() {
     fb.resize(W * H);
 }
 
-screen::~screen() {
+ttyscreen::~ttyscreen() {
     system("stty sane");
     writeraw("\x1b[?25h");
     writeraw("\x1b[?1049l");
@@ -39,20 +39,24 @@ void screen::clear() {
     std::fill(fb.begin(), fb.end(), 0);
 }
 
-void screen::draw() const {
+std::string screen::draw() const {
     const char *blocks[] = { " ", "▄", "▀", "█" };
-    std::string tty = "\x1b[H";
+    std::string output = "\x1b[H";
     for (auto h = 0; h < H; h+=2) {
         for (auto w = 0; w < W; w++) {
             auto bits = (fb[h*W+w] << 1) | fb[(h+1)*W+w];
-            tty += blocks[bits];
+            output += blocks[bits];
         }
-        tty += "\r\n";
+        output += "\r\n";
     }
-    writeraw(tty);
+    return output;
 }
 
-void screen::debug(const char *msg) {
+void ttyscreen::draw() const {
+    writeraw(screen::draw());
+}
+
+void ttyscreen::debug(const char *msg) {
     auto s = "\x1b[H"s + msg + "\x1b[K";
     writeraw(s);
 }

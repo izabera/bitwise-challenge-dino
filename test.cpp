@@ -5,6 +5,8 @@
 #include "sprite.hpp"
 #include "test.hpp"
 
+using namespace std::string_literals;
+
 TEST("sprite/load single") {
     sprite dino("assets/dinorun1.pbm");
 
@@ -29,8 +31,84 @@ TEST("sprite/load all") {
     return OK;
 };
 
+TEST("screen/draw sprite") {
+    sprite square;
+    square.H = 4;
+    square.W = 4;
+    square.data.resize(square.H*square.W, true);
+
+    screen screen;
+    screen.W = 8;
+    screen.H = 4;
+    screen.fb.resize(screen.W*screen.H);
+
+    auto header = "\x1b[H"s;
+    auto nl = "\r\n"s;
+    auto emptychar = " "s, fullchar = "█"s;
+    auto emptyline = ""s, fullline = ""s, halfline = ""s;
+    for (auto i = 0; i < screen.W; i++) {
+        emptyline += emptychar;
+        fullline += fullchar;
+        halfline += i < screen.W / 2 ? fullchar : emptychar;
+    }
+
+    // drawing on an empty screen can't collide
+    if (drawsprite(screen, square, 0, 0) == true)
+        return FAIL;
+
+    //puts("empty screen didn't collide");
+    auto drawn = screen.draw();
+    auto expected = header + halfline + nl + halfline + nl;
+
+    //#include <cctype>
+    //auto dump = [](const auto& s) {
+    //    for (auto c : s)
+    //        printf("%02x ", (u8)c);
+    //    puts("");
+    //    for (auto c : s) {
+    //        char str[3] {};
+    //        str[0] = c;
+    //        printf("%2s ", std::isgraph(c) ? str :
+    //                       c == ' ' ? "SP" :
+    //                       c == '\r' ? "\\r" :
+    //                       c == '\n' ? "\\n" : ".");
+    //    }
+    //    puts("");
+    //};
+    //puts("drawn:");
+    //dump(drawn);
+    //puts("expected:");
+    //dump(expected);
+
+    if (drawn != expected)
+        return FAIL;
+
+    // drawing over the previous sprite must collide
+    if (drawsprite(screen, square, 0, 0) == false)
+        return FAIL;
+
+    // and it doesn't change the content of the screen
+    drawn = screen.draw();
+    if (drawn != expected)
+        return FAIL;
+
+    // drawing on the other side must not collide
+    if (drawsprite(screen, square, 4, 0) == true)
+        return FAIL;
+    drawn = screen.draw();
+    expected = header + fullline + nl + fullline + nl;
+    if (drawn != expected)
+        return FAIL;
+
+    // drawing out of bounds can't collide
+    if (drawsprite(screen, square, 10, 10) == true)
+        return FAIL;
+
+    return OK;
+};
+
 TEST("interactive/screen and keyboard detection") {
-    screen s;
+    ttyscreen s;
     input i;
     u32 limit = FPS * 5;
     while (i.tick < limit) {
@@ -48,7 +126,7 @@ TEST("interactive/screen and keyboard detection") {
 };
 
 TEST("interactive/display image") {
-    screen screen;
+    ttyscreen screen;
     input i;
     u32 limit = FPS * 5;;
 
@@ -75,7 +153,7 @@ TEST("interactive/display image") {
 };
 
 TEST("interactive/move bird") {
-    screen screen;
+    ttyscreen screen;
     input i;
 
     loadsprites();
@@ -101,7 +179,7 @@ TEST("interactive/move bird") {
 };
 
 TEST("interactive/jump") {
-    screen screen;
+    ttyscreen screen;
     input i;
 
     loadsprites();

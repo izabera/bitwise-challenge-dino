@@ -57,7 +57,7 @@ int main() {
 
     loadsprites();
 
-    screen screen;
+    ttyscreen screen;
     input in;
     scene::H = screen.H;
     scene::W = screen.W;
