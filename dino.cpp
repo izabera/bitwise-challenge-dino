@@ -23,7 +23,7 @@ std::pair<state, scene> makescene(const input& i, state state) {
     rng rng{state.seed};
     rng.advance(i.tick+12345); // ignore the first few values
 
-    for (auto w = 0; w < i.W; w++) {
+    for (auto w = -100; w < i.W; w++) {
         auto r = rng.gen();
         if (i.tick + w < FPS * 3)
             continue; // first 3 seconds are peaceful
