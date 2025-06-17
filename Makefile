@@ -5,9 +5,11 @@ LINK.o := $(CXX) $(LDFLAGS)
 
 engine = engine/scene.o engine/screen.o
 
-test: test.o $(engine)
+impl = dino.o
 
-dino: dino.o $(engine)
+test: $(impl) test.o $(engine)
+
+dino: gameloop.o $(impl) $(engine)
 
 -include *.d
 

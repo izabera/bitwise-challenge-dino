@@ -26,7 +26,10 @@ struct ttyscreen : screen {
 struct input {
     bool w{},a{},s{},d{};
     bool quit{};
+
     u32 tick{};
+
+    int W{},H{};
 
     void get();
 };

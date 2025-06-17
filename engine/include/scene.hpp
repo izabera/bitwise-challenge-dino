@@ -3,15 +3,13 @@
 #include "screen.hpp"
 
 struct scene {
-    static inline int W, H;
-
     // horizontal position
     std::vector<int> birds;
     std::vector<int> cactuses;
 
     struct {
         int height;
-        int frame;
+        int anim_frame;
         enum { stand, duck } state;
     } dino{};
 

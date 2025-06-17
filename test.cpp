@@ -1,4 +1,5 @@
 #include <string>
+#include "dino.hpp"
 #include "lib.hpp"
 #include "scene.hpp"
 #include "screen.hpp"
@@ -184,34 +185,27 @@ TEST("interactive/jump") {
 
     loadsprites();
     const auto& dino = *sprites["dinorun1"];
-    int height = 0, speed = 0;
+
+    state state;
     while (1) {
         screen.clear();
-
         i.get();
         if (i.quit) break;
 
-        auto gravity = -5;
-        auto jumpspeed = 125;
+        scene s;
+        if ((state.jumpframe == 0 && i.w) || state.jumpframe)
+            s.dino.height = jump(++state.jumpframe);
 
-        if (height == 0 && i.w)
-            speed = jumpspeed;
-
-        height += speed;
-
-        if (height <= 0)
-            height = speed = 0;
-        else
-            speed += gravity;
-
-        auto h = screen.H - (height * screen.H/2 / 2500 + screen.H/2);
+        if (s.dino.height == 0)
+            state.jumpframe = 0;
+        auto h = screen.H - (s.dino.height * screen.H/2 / 2500 + screen.H/2);
         drawsprite(screen, dino, 0, h);
         screen.draw();
 
-        std::string msg = "height=" + std::to_string(height) +
-                          " speed=" + std::to_string(speed);
+        std::string msg = "height=" + std::to_string(s.dino.height);
         screen.debug(msg.data());
     }
+
     return OK;
 };
 
@@ -240,6 +234,34 @@ TEST("lib/rng advance") {
     return OK;
 };
 
+TEST("dino/jumps last .85s") {
+    int t = 0;
+    while (jump(++t)) ;
+    return t == 51;
+};
+
+TEST("dino/jumps follow gravity") {
+    constexpr static auto gravity = -5;
+    constexpr static auto jumpspeed = 125;
+
+    int g_height = 0, speed = jumpspeed;
+
+    int t = 0;
+    do {
+        int j_height = jump(++t);
+
+        g_height += speed;
+        if (g_height != j_height)
+            return FAIL;
+
+        if (g_height <= 0)
+            break;
+        else
+            speed += gravity;
+    } while (1);
+
+    return OK;
+};
 
 int main(int argc, char **argv) {
     return run_tests(argc, argv) ? 0 : 1;
